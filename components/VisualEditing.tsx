@@ -12,9 +12,7 @@ import { useEffect } from 'react'
 
 export default function VisualEditing() {
   useEffect(() => {
-    const disable = enableVisualEditing({
-      studioUrl: 'http://localhost:3333',
-    })
+    const disable = enableVisualEditing()
 
     return () => disable()
   }, [])

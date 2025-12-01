@@ -51,20 +51,7 @@ async function getHomepage(isDraft = false): Promise<Homepage | null> {
       testimonial,
       contactCtaTitle,
       contactCtaText
-    },
-    "contact": *[_type == "contact" && _id == "contact"][0] {
-      _id,
-      _type,
-      _createdAt,
-      _updatedAt,
-      _rev,
-      email,
-      phone,
-      location,
-      socialLinks,
-      availability
-    }
-  }`
+    }`
 
   return await client.fetch(query)
 }
@@ -166,7 +153,7 @@ export default async function Home() {
                   {homepage.services.map((service) => {
                     const IconComponent =
                       service.icon &&
-                      (LucideIcons as Record<string, typeof LucideIcons.Home>)[service.icon]
+                      (LucideIcons as any)[service.icon]
                     return (
                       <div key={service.title} className="service-card">
                         {IconComponent && (
