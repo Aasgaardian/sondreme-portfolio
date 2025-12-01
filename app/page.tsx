@@ -1,66 +1,279 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import * as LucideIcons from 'lucide-react'
+import { draftMode } from 'next/headers'
+import Link from 'next/link'
+import Balancer from 'react-wrap-balancer'
+import BlurryBlob from '@/components/animata/background/blurry-blob'
+import CaseStudyCard from '@/components/CaseStudyCard'
+import Container from '@/components/Container'
+import PortableText from '@/components/PortableText'
+import SanityImage from '@/components/SanityImage'
+import { getClient } from '@/lib/sanity'
+import type { Homepage } from '@/types/sanity'
+import type { Contact } from '@/types/sanity'
+import { client } from '@/lib/sanity'
+import { Mail, MapPin, Phone, UserRoundSearch } from 'lucide-react'
 
-export default function Home() {
+// Force dynamic rendering to see changes immediately
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
+async function getContact(): Promise<Contact | null> {
+  const query = `*[_type == "contact" && _id == "contact"][0] {
+    _id,
+    _type,
+    _createdAt,
+    _updatedAt,
+    _rev,
+    email,
+    phone,
+    location,
+    socialLinks,
+    availability
+  }`
+
+  return await client.fetch(query)
+}
+
+async function getHomepage(isDraft = false): Promise<Homepage & { contact: Contact | null } | null> {
+  const client = getClient(isDraft)
+
+  const query = `{
+    "homepage": *[_type == "homepage" && _id == "homepage"][0] {
+      _id,
+      _type,
+      _createdAt,
+      _updatedAt,
+      _rev,
+      title,
+      subtitle,
+      bio,
+      profileImage,
+      heroImage,
+      ctaText,
+      ctaLink,
+      secondaryCtaText,
+      secondaryCtaLink,
+      "featuredWork": featuredWork[]-> {
+        _id,
+        _type,
+        _createdAt,
+        _updatedAt,
+        _rev,
+        title,
+        slug,
+        excerpt,
+        mainImage,
+        client,
+        year,
+        tags
+      },
+      servicesTitle,
+      services,
+      stats,
+      testimonial,
+      contactCtaTitle,
+      contactCtaText
+    },
+    "contact": *[_type == "contact" && _id == "contact"][0] {
+      _id,
+      _type,
+      _createdAt,
+      _updatedAt,
+      _rev,
+      email,
+      phone,
+      location,
+      socialLinks,
+      availability
+    }
+  }`
+
+  return await client.fetch(query)
+}
+
+
+export default async function Home() {
+  const { isEnabled } = await draftMode()
+  const data = await getHomepage(isEnabled)
+
+  if (!data) {
+    return <main>…fallback…</main>
+  }
+
+  const homepage = data.homepage
+  const contact = data.contact
+
+
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+    <main>
+      {homepage ? (
+        <>
+          {/* Hero Section */}
+          <section className="hero-section">
+            {homepage.heroImage && (
+              <>
+                <div className="hero-background">
+                  <SanityImage
+                    image={homepage.heroImage}
+                    alt="Hero background"
+                    width={1920}
+                    height={1080}
+                    priority
+                  />
+                </div>
+                <div className="hero-overlay" />
+              </>
+            )}
+            <div className="hero-blobs">
+              <BlurryBlob firstBlobColor="bg-teal" secondBlobColor="bg-slate" />
+            </div>
+
+            <Container>
+              <div className="hero-content">
+                <div className="profile-section">
+                  {homepage.profileImage && (
+                    <div className="profile-image">
+                      <SanityImage
+                        image={homepage.profileImage}
+                        alt={homepage.title}
+                        width={600}
+                        height={600}
+                        priority
+                      />
+                    </div>
+                  )}
+
+                  <div className="contact-details">
+                    <div className="contact-detail-item contact-title">
+                      <UserRoundSearch size={20} />
+                      <p className="contact-detail-title">
+                        Sondre Aasgaard
+                      </p>
+                    </div>
+
+                    <div className="contact-detail-item">
+                      <Mail size={20} />
+                      <div>
+                        <strong>Mail</strong>
+                        <a href={`mailto:${contact.email}`}>{contact.email}</a>
+                      </div>
+                    </div>
+
+                    {contact.phone && (
+                      <div className="contact-detail-item">
+                        <Phone size={20} />
+                        <div>
+                          <strong>mobil</strong>
+                          <a href={`tel:${contact.phone}`}>{contact.phone}</a>
+                        </div>
+                      </div>
+                    )}
+
+                    {contact.location && (
+                      <div className="contact-detail-item">
+                        <MapPin size={20} />
+                        <div>
+                          <strong>Basert</strong>
+                          <p>{contact.location}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                </div>
+                <div className="profile-text">
+                  {homepage.title && (
+                    <h1>
+                      <Balancer>{homepage.title}</Balancer>
+                    </h1>
+                  )}
+
+                  {homepage.subtitle && (
+                    <p className="subtitle">
+                      <Balancer>{homepage.subtitle}</Balancer>
+                    </p>
+                  )}
+
+                  {homepage.bio && (
+                    <div className="bio">
+                      <PortableText value={homepage.bio} />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Container>
+          </section>
+
+          {/* ################ */}
+          {/* Featured Work Section */}
+          {homepage.featuredWork && homepage.featuredWork.length > 0 && (
+            <section className="featured-work-section">
+              <Container>
+                <div className="case-studies-grid">
+                  {homepage.featuredWork.map((study) => (
+                    <CaseStudyCard key={study._id} caseStudy={study} />
+                  ))}
+                </div>
+              </Container>
+            </section>
+          )}
+
+          {/* ################ */}
+          {/* Services Section */}
+          {homepage.services && homepage.services.length > 0 && (
+            <section className="services-section">
+              <Container>
+                {homepage.servicesTitle && (
+                  <h2 className="section-title">
+                    <Balancer>{homepage.servicesTitle}</Balancer>
+                  </h2>
+                )}
+                <div className="services-grid">
+                  {homepage.services.map((service) => {
+                    const IconComponent =
+                      service.icon &&
+                      (LucideIcons as Record<string, typeof LucideIcons.Home>)[service.icon]
+                    return (
+                      <div key={service.title} className="service-card">
+                        {IconComponent && (
+                          <div className="service-icon">
+                            <IconComponent size={32} />
+                          </div>
+                        )}
+                        <h3>{service.title}</h3>
+                        {service.description && <p>{service.description}</p>}
+                      </div>
+                    )
+                  })}
+                </div>
+              </Container>
+            </section>
+          )}
+
+          {(homepage.ctaText || homepage.secondaryCtaText) && (
+            <div className="cta-buttons">
+              {homepage.ctaText && homepage.ctaLink && (
+                <Link href={homepage.ctaLink} className="btn btn-primary">
+                  {homepage.ctaText}
+                </Link>
+              )}
+              {homepage.secondaryCtaText && homepage.secondaryCtaLink && (
+                <Link href={homepage.secondaryCtaLink} className="btn btn-secondary">
+                  {homepage.secondaryCtaText}
+                </Link>
+              )}
+            </div>
+          )}
+        </>
+      ) : (
+        <Container>
+          <div>
+            <h1>Sondre Aasgaard</h1>
+            <p>Velkommen! Legg til hjemmesideinnhold i Sanity Studio.</p>
+          </div>
+        </Container>
+      )}
+    </main>
+  )
 }

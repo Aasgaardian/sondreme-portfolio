@@ -1,0 +1,50 @@
+import CaseStudyCard from '@/components/CaseStudyCard'
+import Container from '@/components/Container'
+import { client } from '@/lib/sanity'
+import type { CaseStudy } from '@/types/sanity'
+
+// Force dynamic rendering to see changes immediately
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
+async function getCaseStudies(): Promise<CaseStudy[]> {
+  const query = `*[_type == "caseStudy" && !defined(__i18n_lang)] | order(_createdAt desc) {
+    _id,
+    _type,
+    _createdAt,
+    _updatedAt,
+    _rev,
+    title,
+    slug,
+    excerpt,
+    mainImage,
+    client,
+    year,
+    tags
+  }`
+
+  return await client.fetch(query)
+}
+
+export default async function ArbeidPage() {
+  const caseStudies = await getCaseStudies()
+
+  return (
+    <main>
+      <Container>
+        <h1>Arbeid</h1>
+        <p>Case-studier og arbeidseksempler</p>
+
+        {caseStudies.length === 0 ? (
+          <p>Ingen case-studier ennå. Legg til noen i Sanity Studio!</p>
+        ) : (
+          <div className="case-studies-grid">
+            {caseStudies.map((study) => (
+              <CaseStudyCard key={study._id} caseStudy={study} />
+            ))}
+          </div>
+        )}
+      </Container>
+    </main>
+  )
+}
