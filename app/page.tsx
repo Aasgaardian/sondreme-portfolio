@@ -6,8 +6,11 @@ import Balancer from 'react-wrap-balancer'
 import BlurryBlob from '@/components/animata/background/blurry-blob'
 import CaseStudyCard from '@/components/CaseStudyCard'
 import Container from '@/components/Container'
+import { FadeIn } from '@/components/FadeIn'
+import { PageTransition } from '@/components/PageTransition'
 import PortableText from '@/components/PortableText'
 import SanityImage from '@/components/SanityImage'
+import { StaggerContainer, StaggerItem } from '@/components/StaggerContainer'
 import { getClient } from '@/lib/sanity'
 import type { Contact, Homepage } from '@/types/sanity'
 
@@ -84,7 +87,7 @@ export default async function Home() {
 
 
   return (
-    <main>
+    <PageTransition>
       {homepage ? (
         <>
           {/* Hero Section */}
@@ -198,29 +201,33 @@ export default async function Home() {
           {homepage.services && homepage.services.length > 0 && (
             <section className="services-section">
               <Container>
-                {homepage.servicesTitle && (
-                  <h2 className="section-title">
-                    <Balancer>{homepage.servicesTitle}</Balancer>
-                  </h2>
-                )}
-                <div className="services-grid">
+                <FadeIn>
+                  {homepage.servicesTitle && (
+                    <h2 className="section-title">
+                      <Balancer>{homepage.servicesTitle}</Balancer>
+                    </h2>
+                  )}
+                </FadeIn>
+                <StaggerContainer className="services-grid">
                   {homepage.services.map((service) => {
                     const IconComponent =
                       service.icon &&
                       (LucideIcons as any)[service.icon]
                     return (
-                      <div key={service.title} className="service-card">
-                        {IconComponent && (
-                          <div className="service-icon">
-                            <IconComponent size={32} />
-                          </div>
-                        )}
-                        <h3>{service.title}</h3>
-                        {service.description && <p>{service.description}</p>}
-                      </div>
+                      <StaggerItem key={service.title}>
+                        <div className="service-card">
+                          {IconComponent && (
+                            <div className="service-icon">
+                              <IconComponent size={32} />
+                            </div>
+                          )}
+                          <h3>{service.title}</h3>
+                          {service.description && <p>{service.description}</p>}
+                        </div>
+                      </StaggerItem>
                     )
                   })}
-                </div>
+                </StaggerContainer>
               </Container>
             </section>
           )}
@@ -248,6 +255,6 @@ export default async function Home() {
           </div>
         </Container>
       )}
-    </main>
+    </PageTransition>
   )
 }
