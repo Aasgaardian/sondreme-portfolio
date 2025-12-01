@@ -1,4 +1,4 @@
-import { Mail, MapPin, Phone, UserRoundSearchIcon } from 'lucide-react'
+import { Mail, MapPin, Phone, UserRoundSearch } from 'lucide-react'
 import ContactForm from '@/components/ContactForm'
 import Container from '@/components/Container'
 import { client } from '@/lib/sanity'
@@ -41,7 +41,7 @@ export default async function KontaktPage() {
                 {contact.availability && <p className="availability">{contact.availability}</p>}
 
                 <div className="contact-details contact-title">
-                  <UserRoundSearchIcon size{20} />
+                  <UserRoundSearch size={20} />
                   <p className="contact-detail-title">Sondre Aasgaard</p>
                 </div>
 
