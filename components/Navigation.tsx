@@ -13,25 +13,29 @@ export function Navigation({ isEnabled }: NavigationProps) {
   const { t } = useLanguage()
 
   return (
-    <header>
+    <header role="banner">
       <div className="header-wrapper">
         <div className="logo">
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex items-center" aria-label="Home - Sondre Aasgaard">
             <p className="logo">SondreAasgaard</p>
           </Link>
         </div>
-        <nav>
+        <nav role="navigation" aria-label="Main navigation">
           <div className="nav-links">
             <Link href="/">{t('nav.home')}</Link>
             <Link href="/arbeid">{t('nav.work')}</Link>
             <Link href="/cv">{t('nav.cv')}</Link>
             <Link href="/kontakt">{t('nav.contact')}</Link>
           </div>
-          <div className="nav-actions">
+          <div className="nav-actions" role="group" aria-label="Site controls">
             <LanguageToggle />
             <ThemeToggle />
             {isEnabled && (
-              <Link href="/api/disable-draft" className="draft-mode-badge">
+              <Link
+                href="/api/disable-draft"
+                className="draft-mode-badge"
+                aria-label="Disable draft mode"
+              >
                 Draft Mode ON
               </Link>
             )}

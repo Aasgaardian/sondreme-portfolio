@@ -4,6 +4,7 @@ import { draftMode } from 'next/headers'
 import Script from 'next/script'
 import { Toaster } from 'react-hot-toast'
 import { Navigation } from '@/components/Navigation'
+import { SkipToContent } from '@/components/SkipToContent'
 import SmoothScroll from '@/components/SmoothScroll'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import VisualEditing from '@/components/VisualEditing'
@@ -96,8 +97,9 @@ export default async function RootLayout({
         <ThemeProvider>
           <LanguageProvider>
             <SmoothScroll>
+              <SkipToContent />
               <Navigation isEnabled={isEnabled} />
-              {children}
+              <main id="main-content">{children}</main>
               <Toaster
                 position="bottom-right"
                 toastOptions={{

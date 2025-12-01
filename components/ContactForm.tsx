@@ -53,7 +53,7 @@ export default function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="contact-form">
+    <form onSubmit={handleSubmit(onSubmit)} className="contact-form" aria-label="Contact form">
       <div className="form-group flex">
         <div className="form-group">
           <label htmlFor="name">Navn</label>
@@ -62,8 +62,14 @@ export default function ContactForm() {
             type="text"
             {...register('name', { required: 'Navn er påkrevd' })}
             className={errors.name ? 'error' : ''}
+            aria-invalid={errors.name ? 'true' : 'false'}
+            aria-describedby={errors.name ? 'name-error' : undefined}
           />
-          {errors.name && <span className="error-message">{errors.name.message}</span>}
+          {errors.name && (
+            <span id="name-error" className="error-message" role="alert">
+              {errors.name.message}
+            </span>
+          )}
         </div>
         <div className="form-group">
           <label htmlFor="email">E-post</label>
@@ -78,8 +84,14 @@ export default function ContactForm() {
               },
             })}
             className={errors.email ? 'error' : ''}
+            aria-invalid={errors.email ? 'true' : 'false'}
+            aria-describedby={errors.email ? 'email-error' : undefined}
           />
-          {errors.email && <span className="error-message">{errors.email.message}</span>}
+          {errors.email && (
+            <span id="email-error" className="error-message" role="alert">
+              {errors.email.message}
+            </span>
+          )}
         </div>
       </div>
 
@@ -96,8 +108,14 @@ export default function ContactForm() {
             },
           })}
           className={errors.message ? 'error' : ''}
+          aria-invalid={errors.message ? 'true' : 'false'}
+          aria-describedby={errors.message ? 'message-error' : undefined}
         />
-        {errors.message && <span className="error-message">{errors.message.message}</span>}
+        {errors.message && (
+          <span id="message-error" className="error-message" role="alert">
+            {errors.message.message}
+          </span>
+        )}
       </div>
 
       <button type="submit" disabled={isSubmitting} className="submit-button">
