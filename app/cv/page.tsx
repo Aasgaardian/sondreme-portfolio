@@ -211,7 +211,6 @@ export default async function CVPage() {
                         alt={exp.company}
                         width={200}
                         height={200}
-                        quality={100}
                       />
                     </div>
                   )}
@@ -273,7 +272,6 @@ export default async function CVPage() {
                         alt={edu.institution}
                         width={200}
                         height={200}
-                        quality={100}
                       />
                     </div>
                   )}
@@ -453,7 +451,6 @@ export default async function CVPage() {
                         alt={interest.name}
                         width={400}
                         height={300}
-                        quality={90}
                       />
                     </div>
                   )}

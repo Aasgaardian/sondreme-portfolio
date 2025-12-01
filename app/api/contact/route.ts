@@ -10,55 +10,61 @@
  * 4. Verify your domain or use onboarding domain for testing
  */
 
-import { NextResponse } from 'next/server'
-import { Resend } from 'resend'
+import { NextResponse } from "next/server";
+import { Resend } from "resend";
 
 // Initialize Resend with API key from environment
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: Request) {
-  try {
-    const { name, email, message } = await request.json()
+	try {
+		const { name, email, message } = await request.json();
 
-    // Validation
-    if (!name || !email || !message) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
-    }
+		// Validation
+		if (!name || !email || !message) {
+			return NextResponse.json(
+				{ error: "Missing required fields" },
+				{ status: 400 }
+			);
+		}
 
-    // For now, log to console if Resend is not configured
-    if (!process.env.RESEND_API_KEY) {
-      console.log('📧 Contact Form Submission:')
-      console.log(`From: ${name} (${email})`)
-      console.log(`Message: ${message}`)
+		// For now, log to console if Resend is not configured
+		if (!process.env.RESEND_API_KEY) {
+			console.log("📧 Contact Form Submission:");
+			console.log(`From: ${name} (${email})`);
+			console.log(`Message: ${message}`);
 
-      return NextResponse.json({
-        message: 'Message logged (Resend not configured)',
-        success: true,
-      })
-    }
+			return NextResponse.json({
+				message: "Message logged (Resend not configured)",
+				success: true,
+			});
+		}
 
-    // Send email using Resend
-    const data = await resend.emails.send({
-      from: 'Portfolio Contact <onboarding@resend.dev>', // Change this after domain verification
-      to: process.env.CONTACT_EMAIL || 'your@email.com', // Your email
-      replyTo: email,
-      subject: `New Contact Form Message from ${name}`,
-      html: `
+		// Send email using Resend
+		const data = await resend.emails.send({
+			from: "Portfolio Contact <onboarding@resend.dev>", // Change this after domain verification
+			to: process.env.CONTACT_EMAIL || "mail@sondre.me", // Your email
+			replyTo: email,
+			subject: `New Contact Form Message from ${name}`,
+			html: `
         <h2>New Contact Form Submission</h2>
         <p><strong>From:</strong> ${name}</p>
         <p><strong>Email:</strong> ${email}</p>
         <p><strong>Message:</strong></p>
-        <p>${message.replace(/\n/g, '<br>')}</p>
+        <p>${message.replace(/\n/g, "<br>")}</p>
       `,
-    })
+		});
 
-    return NextResponse.json({
-      message: 'Email sent successfully',
-      success: true,
-      id: data.id,
-    })
-  } catch (error) {
-    console.error('Contact form error:', error)
-    return NextResponse.json({ error: 'Failed to send message' }, { status: 500 })
-  }
+		return NextResponse.json({
+			message: "Email sent successfully",
+			success: true,
+			id: data.data?.id || null,
+		});
+	} catch (error) {
+		console.error("Contact form error:", error);
+		return NextResponse.json(
+			{ error: "Failed to send message" },
+			{ status: 500 }
+		);
+	}
 }
