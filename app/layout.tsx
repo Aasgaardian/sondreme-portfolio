@@ -21,8 +21,52 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Sondre Aasgaard - Portfolio',
-  description: 'Portfolio of Sondre Aasgaard',
+  metadataBase: new URL('https://sondreme-portfolio.vercel.app'),
+  title: {
+    default: 'Sondre Aasgaard - Portfolio',
+    template: '%s | Sondre Aasgaard',
+  },
+  description:
+    'Portfolio and CV of Sondre Aasgaard - developer, designer, and creative professional',
+  keywords: [
+    'Sondre Aasgaard',
+    'portfolio',
+    'developer',
+    'designer',
+    'web development',
+    'frontend',
+    'UX',
+    'UI',
+  ],
+  authors: [{ name: 'Sondre Aasgaard', url: 'https://sondreme-portfolio.vercel.app' }],
+  creator: 'Sondre Aasgaard',
+  openGraph: {
+    type: 'website',
+    locale: 'no_NO',
+    alternateLocale: 'en_US',
+    url: 'https://sondreme-portfolio.vercel.app',
+    title: 'Sondre Aasgaard - Portfolio',
+    description:
+      'Portfolio and CV of Sondre Aasgaard - developer, designer, and creative professional',
+    siteName: 'Sondre Aasgaard Portfolio',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Sondre Aasgaard - Portfolio',
+    description:
+      'Portfolio and CV of Sondre Aasgaard - developer, designer, and creative professional',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 }
 
 export default async function RootLayout({

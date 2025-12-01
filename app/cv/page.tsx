@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Container from '@/components/Container'
 import PortableText from '@/components/PortableText'
 import SanityImage from '@/components/SanityImage'
@@ -11,6 +12,17 @@ import type {
   Skill,
   Tool,
 } from '@/types/sanity'
+
+export const metadata: Metadata = {
+  title: 'CV',
+  description:
+    'Min CV - jobberfaring, utdanning, ferdigheter, programmeringsspråk, og interesser',
+  openGraph: {
+    title: 'CV | Sondre Aasgaard',
+    description:
+      'Min CV - jobberfaring, utdanning, ferdigheter, programmeringsspråk, og interesser',
+  },
+}
 
 // Force dynamic rendering to see changes immediately
 export const dynamic = 'force-dynamic'

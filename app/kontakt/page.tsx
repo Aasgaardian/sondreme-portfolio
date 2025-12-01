@@ -1,8 +1,18 @@
+import type { Metadata } from 'next'
 import { Mail, MapPin, Phone, UserRoundSearch } from 'lucide-react'
 import ContactForm from '@/components/ContactForm'
 import Container from '@/components/Container'
 import { client } from '@/lib/sanity'
 import type { Contact } from '@/types/sanity'
+
+export const metadata: Metadata = {
+  title: 'Kontakt',
+  description: 'Ta kontakt - send meg en melding eller finn meg på sosiale medier',
+  openGraph: {
+    title: 'Kontakt | Sondre Aasgaard',
+    description: 'Ta kontakt - send meg en melding eller finn meg på sosiale medier',
+  },
+}
 
 // Force dynamic rendering to see changes immediately
 export const dynamic = 'force-dynamic'

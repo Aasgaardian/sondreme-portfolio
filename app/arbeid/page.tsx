@@ -1,7 +1,18 @@
+import type { Metadata } from 'next'
 import CaseStudyCard from '@/components/CaseStudyCard'
 import Container from '@/components/Container'
 import { client } from '@/lib/sanity'
 import type { CaseStudy } from '@/types/sanity'
+
+export const metadata: Metadata = {
+  title: 'Arbeid',
+  description: 'Se mine prosjekter og case studies - webutvikling, design, og kreative løsninger',
+  openGraph: {
+    title: 'Arbeid | Sondre Aasgaard',
+    description:
+      'Se mine prosjekter og case studies - webutvikling, design, og kreative løsninger',
+  },
+}
 
 // Force dynamic rendering to see changes immediately
 export const dynamic = 'force-dynamic'
