@@ -7,6 +7,7 @@ import { Navigation } from '@/components/Navigation'
 import SmoothScroll from '@/components/SmoothScroll'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import VisualEditing from '@/components/VisualEditing'
+import { LanguageProvider } from '@/lib/language-context'
 import './globals.css'
 
 const geistSans = Geist({
@@ -49,21 +50,23 @@ export default async function RootLayout({
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ThemeProvider>
-          <SmoothScroll>
-            <Navigation isEnabled={isEnabled} />
-            {children}
-            <Toaster
-              position="bottom-right"
-              toastOptions={{
-                duration: 4000,
-                style: {
-                  background: '#333',
-                  color: '#fff',
-                },
-              }}
-            />
-            {isEnabled && <VisualEditing />}
-          </SmoothScroll>
+          <LanguageProvider>
+            <SmoothScroll>
+              <Navigation isEnabled={isEnabled} />
+              {children}
+              <Toaster
+                position="bottom-right"
+                toastOptions={{
+                  duration: 4000,
+                  style: {
+                    background: '#333',
+                    color: '#fff',
+                  },
+                }}
+              />
+              {isEnabled && <VisualEditing />}
+            </SmoothScroll>
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>

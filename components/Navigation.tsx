@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import Image from "next/image";
+import { useLanguage } from '@/lib/language-context'
 import { LanguageToggle } from './LanguageToggle'
 import { ThemeToggle } from './ThemeToggle'
 
@@ -10,6 +10,8 @@ interface NavigationProps {
 }
 
 export function Navigation({ isEnabled }: NavigationProps) {
+  const { t } = useLanguage()
+
   return (
     <header>
       <div className="header-wrapper">
@@ -20,10 +22,10 @@ export function Navigation({ isEnabled }: NavigationProps) {
         </div>
         <nav>
           <div className="nav-links">
-            <Link href="/">Hjem</Link>
-            <Link href="/arbeid">Arbeid</Link>
-            <Link href="/cv">CV</Link>
-            <Link href="/kontakt">Kontakt</Link>
+            <Link href="/">{t('nav.home')}</Link>
+            <Link href="/arbeid">{t('nav.work')}</Link>
+            <Link href="/cv">{t('nav.cv')}</Link>
+            <Link href="/kontakt">{t('nav.contact')}</Link>
           </div>
           <div className="nav-actions">
             <LanguageToggle />
