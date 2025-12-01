@@ -1,3 +1,4 @@
+import { Mail, MapPin, Phone, UserRoundSearch } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
 import { draftMode } from 'next/headers'
 import Link from 'next/link'
@@ -8,7 +9,7 @@ import Container from '@/components/Container'
 import PortableText from '@/components/PortableText'
 import SanityImage from '@/components/SanityImage'
 import { getClient } from '@/lib/sanity'
-import type { Homepage } from '@/types/sanity'
+import type { Contact, Homepage } from '@/types/sanity'
 
 // Force dynamic rendering to see changes immediately
 export const dynamic = 'force-dynamic'
@@ -56,10 +57,31 @@ async function getHomepage(isDraft = false): Promise<Homepage | null> {
   return await client.fetch(query)
 }
 
+async function getContact(isDraft = false): Promise<Contact | null> {
+  const client = getClient(isDraft)
+  const query = `*[_type == "contact" && _id == "contact"][0] {
+    _id,
+    _type,
+    _createdAt,
+    _updatedAt,
+    _rev,
+    email,
+    phone,
+    location,
+    socialLinks,
+    availability
+  }`
+
+  return await client.fetch(query)
+}
+
 
 export default async function Home() {
   const { isEnabled } = await draftMode()
-  const homepage = await getHomepage(isEnabled)
+  const [homepage, contact] = await Promise.all([
+    getHomepage(isEnabled),
+    getContact(isEnabled),
+  ])
 
 
 
@@ -99,6 +121,40 @@ export default async function Home() {
                         height={600}
                         priority
                       />
+                    </div>
+                  )}
+
+                  {contact && (
+                    <div className="contact-details">
+                      <div className="contact-detail-item contact-title">
+                        <UserRoundSearch size={20} />
+                        <p className="contact-detail-title">{homepage.title}</p>
+                      </div>
+                      <div className="contact-detail-item">
+                        <Mail size={20} />
+                        <div>
+                          <strong>Mail</strong>
+                          <a href={`mailto:${contact.email}`}>{contact.email}</a>
+                        </div>
+                      </div>
+                      {contact.phone && (
+                        <div className="contact-detail-item">
+                          <Phone size={20} />
+                          <div>
+                            <strong>mobil</strong>
+                            <a href={`tel:${contact.phone}`}>{contact.phone}</a>
+                          </div>
+                        </div>
+                      )}
+                      {contact.location && (
+                        <div className="contact-detail-item">
+                          <MapPin size={20} />
+                          <div>
+                            <strong>Basert</strong>
+                            <p>{contact.location}</p>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
