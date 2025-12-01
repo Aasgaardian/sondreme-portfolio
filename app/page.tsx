@@ -48,8 +48,6 @@ async function getHomepage(isDraft = false): Promise<Homepage | null> {
       },
       servicesTitle,
       services,
-      stats,
-      testimonial,
       contactCtaTitle,
       contactCtaText
     }`
@@ -128,7 +126,7 @@ export default async function Home() {
                     <div className="contact-details">
                       <div className="contact-detail-item contact-title">
                         <UserRoundSearch size={20} />
-                        <p className="contact-detail-title">{homepage.title}</p>
+                        <p className="contact-detail-title">Sondre Aasgaard</p>
                       </div>
                       <div className="contact-detail-item">
                         <Mail size={20} />

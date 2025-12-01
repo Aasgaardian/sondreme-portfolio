@@ -251,7 +251,6 @@ h3 {
 .case-studies-grid:has(article:hover) article {
   opacity: 0.2;
   filter: grayscale(1);
-  border-radius: 1rem;
   overflow: clip;
 }
 
@@ -270,9 +269,7 @@ h3 {
 }
 
 .case-study-card:hover {
-  transform: translateY(-8px);
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
-  transform: scale(1.05);
 }
 
 .case-study-card__image {

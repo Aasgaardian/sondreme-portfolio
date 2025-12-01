@@ -41,9 +41,12 @@ export async function POST(request: Request) {
 		}
 
 		// Send email using Resend
+		// NOTE: Using onboarding domain for now. To use your own domain:
+		// 1. Add and verify your domain in Resend dashboard
+		// 2. Update 'from' to: "Portfolio Contact <contact@yourdomain.com>"
 		const data = await resend.emails.send({
-			from: "Portfolio Contact <onboarding@resend.dev>", // Change this after domain verification
-			to: process.env.CONTACT_EMAIL || "mail@sondre.me", // Your email
+			from: "Portfolio Contact <onboarding@resend.dev>",
+			to: process.env.CONTACT_EMAIL || "mail@sondre.me",
 			replyTo: email,
 			subject: `New Contact Form Message from ${name}`,
 			html: `

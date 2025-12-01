@@ -39,20 +39,6 @@ export interface Service {
   icon?: string
 }
 
-// Stat (object, not document)
-export interface Stat {
-  number: string
-  label: string
-}
-
-// Testimonial (object, not document)
-export interface Testimonial {
-  quote?: string
-  author?: string
-  authorTitle?: string
-  authorImage?: SanityImageSource
-}
-
 // Homepage (Singleton)
 export interface Homepage extends SanityDocument {
   _type: 'homepage'
@@ -68,8 +54,6 @@ export interface Homepage extends SanityDocument {
   featuredWork?: CaseStudy[]
   servicesTitle?: string
   services?: Service[]
-  stats?: Stat[]
-  testimonial?: Testimonial
   contactCtaTitle?: string
   contactCtaText?: string
 }

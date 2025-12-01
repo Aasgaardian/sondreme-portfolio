@@ -40,11 +40,6 @@ export default async function KontaktPage() {
               <>
                 {contact.availability && <p className="availability">{contact.availability}</p>}
 
-                <div className="contact-details contact-title">
-                  <UserRoundSearch size={20} />
-                  <p className="contact-detail-title">Sondre Aasgaard</p>
-                </div>
-
                 <div className="contact-details">
                   <div className="contact-detail-item">
                     <Mail size={20} />
