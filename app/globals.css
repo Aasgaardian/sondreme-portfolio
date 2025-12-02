@@ -44,6 +44,11 @@ html.dark {
   --section-bg-2: rgba(41, 77, 74, 0.3);
 }
 
+/* Font Loading Optimization */
+@font-face {
+  font-display: swap;
+}
+
 html {
   scroll-behavior: auto;
   scroll-padding-top: calc(var(--header-height) + 20px);

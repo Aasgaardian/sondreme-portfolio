@@ -84,6 +84,7 @@ export default async function RootLayout({
     <html lang="no" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://use.typekit.net" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://use.typekit.net" />
         <Script id="theme-init" strategy="beforeInteractive">
           {`
             (function() {
