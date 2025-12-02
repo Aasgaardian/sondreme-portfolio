@@ -3,10 +3,12 @@
  *
  * Working contact form with validation using React Hook Form
  * Sends emails via API route with Resend
+ * Protected by Cloudflare Turnstile anti-spam
  */
 
 'use client'
 
+import { Turnstile } from '@marsidev/react-turnstile'
 import { Loader2, Send } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -16,10 +18,12 @@ interface ContactFormData {
   name: string
   email: string
   message: string
+  turnstileToken: string
 }
 
 export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
   const {
     register,
     handleSubmit,
@@ -28,6 +32,11 @@ export default function ContactForm() {
   } = useForm<ContactFormData>()
 
   const onSubmit = async (data: ContactFormData) => {
+    if (!turnstileToken) {
+      toast.error('Vennligst fullfør sikkerhetsbekreftelsen.')
+      return
+    }
+
     setIsSubmitting(true)
 
     try {
@@ -36,17 +45,28 @@ export default function ContactForm() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          turnstileToken,
+        }),
       })
+
+      const result = await response.json()
 
       if (response.ok) {
         toast.success('Melding sendt! Jeg kommer tilbake til deg snart.')
         reset()
+        setTurnstileToken(null)
       } else {
-        throw new Error('Failed to send message')
+        throw new Error(result.error || 'Failed to send message')
       }
-    } catch (_error) {
-      toast.error('Kunne ikke sende melding. Prøv igjen eller send meg en e-post direkte.')
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error'
+      toast.error(
+        message.includes('Turnstile')
+          ? 'Sikkerhetsbekreftelse feilet. Vennligst prøv igjen.'
+          : 'Kunne ikke sende melding. Prøv igjen eller send meg en e-post direkte.'
+      )
     } finally {
       setIsSubmitting(false)
     }
@@ -118,7 +138,23 @@ export default function ContactForm() {
         )}
       </div>
 
-      <button type="submit" disabled={isSubmitting} className="submit-button">
+      <div className="form-group">
+        <Turnstile
+          siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
+          onSuccess={(token) => setTurnstileToken(token)}
+          onError={() => {
+            setTurnstileToken(null)
+            toast.error('Sikkerhetsbekreftelse feilet. Vennligst last inn siden på nytt.')
+          }}
+          onExpire={() => setTurnstileToken(null)}
+          options={{
+            theme: 'auto',
+            size: 'normal',
+          }}
+        />
+      </div>
+
+      <button type="submit" disabled={isSubmitting || !turnstileToken} className="submit-button">
         {isSubmitting ? (
           <>
             <Loader2 size={20} className="spinning" />

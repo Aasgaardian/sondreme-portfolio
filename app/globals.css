@@ -340,6 +340,11 @@ h3 {
   font-weight: 400;
 }
 
+.subtitle a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .lead {
   font-size: 1.125rem;
   line-height: 1.7;
