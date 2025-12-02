@@ -7,12 +7,15 @@ import { createClient } from 'next-sanity'
  *
  * Environment variables are loaded from .env.local
  * NEXT_PUBLIC_ prefix makes them available to the browser
+ *
+ * useCdn: false in development for immediate content updates
+ * useCdn: true in production for better performance
  */
 export const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
   apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION!,
-  useCdn: process.env.NEXT_PUBLIC_SANITY_USE_CDN === 'true',
+  useCdn: process.env.NODE_ENV === 'production',
   perspective: 'published',
   stega: {
     enabled: false,
