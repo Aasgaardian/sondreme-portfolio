@@ -10,6 +10,7 @@ import SmoothScroll from '@/components/SmoothScroll'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import VisualEditing from '@/components/VisualEditing'
 import { LanguageProvider } from '@/lib/language-context'
+import { isMaintenanceMode } from '@/lib/site-settings'
 import './globals.css'
 
 const geistSans = Geist({
@@ -77,6 +78,7 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   const { isEnabled } = await draftMode()
+  const maintenanceMode = await isMaintenanceMode()
 
   return (
     <html lang="no" suppressHydrationWarning>
@@ -112,9 +114,9 @@ export default async function RootLayout({
           <LanguageProvider>
             <SmoothScroll>
               <SkipToContent />
-              <Navigation isEnabled={isEnabled} />
+              <Navigation isEnabled={isEnabled} maintenanceMode={maintenanceMode} />
               <main id="main-content">{children}</main>
-              <Footer />
+              {!maintenanceMode && <Footer />}
               <Toaster
                 position="bottom-right"
                 toastOptions={{

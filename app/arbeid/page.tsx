@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import CaseStudyCard from '@/components/CaseStudyCard'
 import Container from '@/components/Container'
+import { MaintenancePage } from '@/components/MaintenancePage'
 import { client } from '@/lib/sanity'
+import { getSiteSettings, isMaintenanceMode } from '@/lib/site-settings'
 import type { CaseStudy } from '@/types/sanity'
 
 export const metadata: Metadata = {
@@ -38,6 +40,14 @@ async function getCaseStudies(): Promise<CaseStudy[]> {
 }
 
 export default async function ArbeidPage() {
+  // Check maintenance mode first
+  const maintenanceMode = await isMaintenanceMode()
+
+  if (maintenanceMode) {
+    const settings = await getSiteSettings()
+    return <MaintenancePage message={settings?.maintenanceMode?.message} />
+  }
+
   const caseStudies = await getCaseStudies()
 
   return (

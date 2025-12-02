@@ -43,7 +43,7 @@ export interface Service {
 export interface Homepage extends SanityDocument {
   _type: 'homepage'
   title: string
-  subtitle?: string
+  subtitle?: PortableTextBlock[]
   bio?: PortableTextBlock[]
   profileImage?: SanityImageSource
   heroImage?: SanityImageSource
@@ -90,7 +90,8 @@ export interface Skill extends SanityDocument {
   _type: 'skill'
   name: string
   category: 'frontend' | 'backend' | 'design' | 'tools' | 'other'
-  proficiency: number // 1-5
+  proficiency: number // 1-100 (percentage)
+  description?: string
   icon?: SanityImageSource
 }
 

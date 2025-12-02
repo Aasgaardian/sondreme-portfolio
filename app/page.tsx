@@ -3,7 +3,6 @@ import * as LucideIcons from 'lucide-react'
 import { draftMode } from 'next/headers'
 import Link from 'next/link'
 import Balancer from 'react-wrap-balancer'
-import BlurryBlob from '@/components/animata/background/blurry-blob'
 import CaseStudyCard from '@/components/CaseStudyCard'
 import Container from '@/components/Container'
 import { FadeIn } from '@/components/FadeIn'
@@ -13,6 +12,7 @@ import SanityImage from '@/components/SanityImage'
 import { SocialIcons } from '@/components/SocialIcons'
 import { StaggerContainer, StaggerItem } from '@/components/StaggerContainer'
 import { getClient } from '@/lib/sanity'
+import { isMaintenanceMode } from '@/lib/site-settings'
 import type { Contact, Homepage } from '@/types/sanity'
 
 // Force dynamic rendering to see changes immediately
@@ -71,12 +71,11 @@ async function getContact(isDraft = false): Promise<Contact | null> {
 
 export default async function Home() {
   const { isEnabled } = await draftMode()
-  const [homepage, contact] = await Promise.all([
+  const [homepage, contact, maintenanceMode] = await Promise.all([
     getHomepage(isEnabled),
     getContact(isEnabled),
+    isMaintenanceMode(),
   ])
-
-
 
   return (
     <PageTransition>
@@ -84,10 +83,6 @@ export default async function Home() {
         <>
           {/* Hero Section */}
           <section className="hero-section">
-            <div className="hero-blobs">
-              <BlurryBlob firstBlobColor="bg-teal" secondBlobColor="bg-slate" />
-            </div>
-
             <Container>
               <div className="hero-content">
                 <div className="profile-section">
@@ -142,64 +137,69 @@ export default async function Home() {
                   )}
                 </div>
                 <div className="profile-text">
-                  {homepage.subtitle && (
-                    <p className="subtitle">
-                      {homepage.subtitle}
-                    </p>
+                  {homepage.subtitle && Array.isArray(homepage.subtitle) && homepage.subtitle.length > 0 && (
+                    <div className="subtitle">
+                      <PortableText value={homepage.subtitle} />
+                    </div>
                   )}
                 </div>
               </div>
             </Container>
           </section>
 
-          {/* ################ */}
-          {/* Featured Work Section */}
-          {homepage.featuredWork && homepage.featuredWork.length > 0 && (
-            <section className="featured-work-section">
-              <Container>
-                <div className="case-studies-grid">
-                  {homepage.featuredWork.map((study) => (
-                    <CaseStudyCard key={study._id} caseStudy={study} />
-                  ))}
-                </div>
-              </Container>
-            </section>
-          )}
+          {/* Only show these sections if not in maintenance mode */}
+          {!maintenanceMode && (
+            <>
+              {/* ################ */}
+              {/* Featured Work Section */}
+              {homepage.featuredWork && homepage.featuredWork.length > 0 && (
+                <section className="featured-work-section">
+                  <Container>
+                    <div className="case-studies-grid">
+                      {homepage.featuredWork.map((study) => (
+                        <CaseStudyCard key={study._id} caseStudy={study} />
+                      ))}
+                    </div>
+                  </Container>
+                </section>
+              )}
 
-          {/* ################ */}
-          {/* Services Section */}
-          {homepage.services && homepage.services.length > 0 && (
-            <section className="services-section">
-              <Container>
-                <FadeIn>
-                  {homepage.servicesTitle && (
-                    <h2 className="section-title">
-                      <Balancer>{homepage.servicesTitle}</Balancer>
-                    </h2>
-                  )}
-                </FadeIn>
-                <StaggerContainer className="services-grid">
-                  {homepage.services.map((service) => {
-                    const IconComponent =
-                      service.icon &&
-                      (LucideIcons as any)[service.icon]
-                    return (
-                      <StaggerItem key={service.title}>
-                        <div className="service-card">
-                          {IconComponent && (
-                            <div className="service-icon">
-                              <IconComponent size={32} />
+              {/* ################ */}
+              {/* Services Section */}
+              {homepage.services && homepage.services.length > 0 && (
+                <section className="services-section">
+                  <Container>
+                    <FadeIn>
+                      {homepage.servicesTitle && (
+                        <h2 className="section-title">
+                          <Balancer>{homepage.servicesTitle}</Balancer>
+                        </h2>
+                      )}
+                    </FadeIn>
+                    <StaggerContainer className="services-grid">
+                      {homepage.services.map((service) => {
+                        const IconComponent =
+                          service.icon &&
+                          (LucideIcons as any)[service.icon]
+                        return (
+                          <StaggerItem key={service.title}>
+                            <div className="service-card">
+                              {IconComponent && (
+                                <div className="service-icon">
+                                  <IconComponent size={32} />
+                                </div>
+                              )}
+                              <h3>{service.title}</h3>
+                              {service.description && <p>{service.description}</p>}
                             </div>
-                          )}
-                          <h3>{service.title}</h3>
-                          {service.description && <p>{service.description}</p>}
-                        </div>
-                      </StaggerItem>
-                    )
-                  })}
-                </StaggerContainer>
-              </Container>
-            </section>
+                          </StaggerItem>
+                        )
+                      })}
+                    </StaggerContainer>
+                  </Container>
+                </section>
+              )}
+            </>
           )}
         </>
       ) : (

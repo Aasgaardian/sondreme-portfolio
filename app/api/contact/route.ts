@@ -40,6 +40,16 @@ export async function POST(request: Request) {
 			});
 		}
 
+		// Sanitize inputs to prevent XSS in emails
+		const sanitize = (text: string) => {
+			return text
+				.replace(/&/g, "&amp;")
+				.replace(/</g, "&lt;")
+				.replace(/>/g, "&gt;")
+				.replace(/"/g, "&quot;")
+				.replace(/'/g, "&#039;");
+		};
+
 		// Send email using Resend
 		// NOTE: Using onboarding domain for now. To use your own domain:
 		// 1. Add and verify your domain in Resend dashboard
@@ -48,13 +58,13 @@ export async function POST(request: Request) {
 			from: "Portfolio Contact <onboarding@resend.dev>",
 			to: process.env.CONTACT_EMAIL || "mail@sondre.me",
 			replyTo: email,
-			subject: `New Contact Form Message from ${name}`,
+			subject: `New Contact Form Message from ${sanitize(name)}`,
 			html: `
         <h2>New Contact Form Submission</h2>
-        <p><strong>From:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>From:</strong> ${sanitize(name)}</p>
+        <p><strong>Email:</strong> ${sanitize(email)}</p>
         <p><strong>Message:</strong></p>
-        <p>${message.replace(/\n/g, "<br>")}</p>
+        <p>${sanitize(message).replace(/\n/g, "<br>")}</p>
       `,
 		});
 

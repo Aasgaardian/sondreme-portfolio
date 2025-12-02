@@ -9,9 +9,10 @@ import { ThemeToggle } from './ThemeToggle'
 
 interface NavigationProps {
   isEnabled?: boolean
+  maintenanceMode?: boolean
 }
 
-export function Navigation({ isEnabled }: NavigationProps) {
+export function Navigation({ isEnabled, maintenanceMode = false }: NavigationProps) {
   const { t } = useLanguage()
   const pathname = usePathname()
 
@@ -31,8 +32,11 @@ export function Navigation({ isEnabled }: NavigationProps) {
           </Link>
         </div>
 
-        {/* Desktop Navigation */}
-        <nav role="navigation" aria-label="Main navigation" className="desktop-nav">
+        {/* Only show navigation if not in maintenance mode */}
+        {!maintenanceMode && (
+          <>
+            {/* Desktop Navigation */}
+            <nav role="navigation" aria-label="Main navigation" className="desktop-nav">
           <div className="nav-links">
             <Link href="/" className={isActive('/') ? 'active' : ''} aria-current={isActive('/') ? 'page' : undefined}>
               {t('nav.home')}
@@ -62,8 +66,10 @@ export function Navigation({ isEnabled }: NavigationProps) {
           </div>
         </nav>
 
-        {/* Mobile Menu */}
-        <MobileMenu isEnabled={isEnabled} />
+            {/* Mobile Menu */}
+            <MobileMenu isEnabled={isEnabled} />
+          </>
+        )}
       </div>
     </header>
   )

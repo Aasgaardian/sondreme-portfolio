@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 import Container from '@/components/Container'
+import { MaintenancePage } from '@/components/MaintenancePage'
 import PortableText from '@/components/PortableText'
 import SanityImage from '@/components/SanityImage'
 import { client } from '@/lib/sanity'
+import { getSiteSettings, isMaintenanceMode } from '@/lib/site-settings'
 import type {
   Contact,
   Education,
@@ -79,6 +81,7 @@ async function getSkills(): Promise<Skill[]> {
     name,
     category,
     proficiency,
+    description,
     icon
   }`
 
@@ -157,6 +160,14 @@ async function getInterests(): Promise<Interest[]> {
 }
 
 export default async function CVPage() {
+  // Check maintenance mode first
+  const maintenanceMode = await isMaintenanceMode()
+
+  if (maintenanceMode) {
+    const settings = await getSiteSettings()
+    return <MaintenancePage message={settings?.maintenanceMode?.message} />
+  }
+
   const [experiences, education, skills, contact, tools, languages, interests] = await Promise.all([
     getExperience(),
     getEducation(),
@@ -328,21 +339,40 @@ export default async function CVPage() {
           {skills.length === 0 ? (
             <p>Legg til ferdighetene dine i Sanity Studio!</p>
           ) : (
-            <div className="skills-grid">
+            <div className="skills-list">
               {Object.entries(skillsByCategory).map(([category, categorySkills]) => (
                 <div key={category} className="skill-category">
                   <h3>{category.charAt(0).toUpperCase() + category.slice(1)}</h3>
-                  <ul>
+                  <div className="skills-category-list">
                     {categorySkills.map((skill) => (
-                      <li key={skill._id}>
-                        {skill.name}
-                        <span className="skill-proficiency">
-                          {'★'.repeat(skill.proficiency)}
-                          {'☆'.repeat(5 - skill.proficiency)}
-                        </span>
-                      </li>
+                      <details key={skill._id} className="skill-item">
+                        <summary className="skill-summary">
+                          <div className="skill-header">
+                            <div className="skill-name-wrapper">
+                              <span className="skill-name">{skill.name}</span>
+                              {skill.description && (
+                                <svg className="skill-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                  <path d="M4 6L8 10L12 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                              )}
+                            </div>
+                            <span className="skill-percentage">{skill.proficiency}%</span>
+                          </div>
+                          <div className="skill-bar">
+                            <div
+                              className="skill-bar-fill"
+                              style={{ width: `${skill.proficiency}%` }}
+                            />
+                          </div>
+                        </summary>
+                        {skill.description && (
+                          <div className="skill-description">
+                            <p>{skill.description}</p>
+                          </div>
+                        )}
+                      </details>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               ))}
             </div>

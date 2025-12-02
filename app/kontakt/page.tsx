@@ -2,7 +2,9 @@ import type { Metadata } from 'next'
 import { Mail, MapPin, Phone, UserRoundSearch } from 'lucide-react'
 import ContactForm from '@/components/ContactForm'
 import Container from '@/components/Container'
+import { MaintenancePage } from '@/components/MaintenancePage'
 import { client } from '@/lib/sanity'
+import { getSiteSettings, isMaintenanceMode } from '@/lib/site-settings'
 import type { Contact } from '@/types/sanity'
 
 export const metadata: Metadata = {
@@ -36,6 +38,14 @@ async function getContact(): Promise<Contact | null> {
 }
 
 export default async function KontaktPage() {
+  // Check maintenance mode first
+  const maintenanceMode = await isMaintenanceMode()
+
+  if (maintenanceMode) {
+    const settings = await getSiteSettings()
+    return <MaintenancePage message={settings?.maintenanceMode?.message} />
+  }
+
   const contact = await getContact()
 
   return (
