@@ -10,6 +10,7 @@ import { FadeIn } from '@/components/FadeIn'
 import { PageTransition } from '@/components/PageTransition'
 import PortableText from '@/components/PortableText'
 import SanityImage from '@/components/SanityImage'
+import { SocialIcons } from '@/components/SocialIcons'
 import { StaggerContainer, StaggerItem } from '@/components/StaggerContainer'
 import { getClient } from '@/lib/sanity'
 import type { Contact, Homepage } from '@/types/sanity'
@@ -26,15 +27,8 @@ async function getHomepage(isDraft = false): Promise<Homepage | null> {
       _createdAt,
       _updatedAt,
       _rev,
-      title,
       subtitle,
-      bio,
       profileImage,
-      heroImage,
-      ctaText,
-      ctaLink,
-      secondaryCtaText,
-      secondaryCtaLink,
       "featuredWork": featuredWork[]-> {
         _id,
         _type,
@@ -50,9 +44,7 @@ async function getHomepage(isDraft = false): Promise<Homepage | null> {
         tags
       },
       servicesTitle,
-      services,
-      contactCtaTitle,
-      contactCtaText
+      services
     }`
 
   return await client.fetch(query)
@@ -92,20 +84,6 @@ export default async function Home() {
         <>
           {/* Hero Section */}
           <section className="hero-section">
-            {homepage.heroImage && (
-              <>
-                <div className="hero-background">
-                  <SanityImage
-                    image={homepage.heroImage}
-                    alt="Hero background"
-                    width={1920}
-                    height={1080}
-                    priority
-                  />
-                </div>
-                <div className="hero-overlay" />
-              </>
-            )}
             <div className="hero-blobs">
               <BlurryBlob firstBlobColor="bg-teal" secondBlobColor="bg-slate" />
             </div>
@@ -117,7 +95,6 @@ export default async function Home() {
                     <div className="profile-image">
                       <SanityImage
                         image={homepage.profileImage}
-                        alt={homepage.title}
                         width={600}
                         height={600}
                         priority
@@ -156,26 +133,19 @@ export default async function Home() {
                           </div>
                         </div>
                       )}
+                      {contact.socialLinks && contact.socialLinks.length > 0 && (
+                        <div className="contact-detail-item contact-social">
+                          <SocialIcons socialLinks={contact.socialLinks} />
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
                 <div className="profile-text">
-                  {homepage.title && (
-                    <h1>
-                      <Balancer>{homepage.title}</Balancer>
-                    </h1>
-                  )}
-
                   {homepage.subtitle && (
                     <p className="subtitle">
-                      <Balancer>{homepage.subtitle}</Balancer>
+                      {homepage.subtitle}
                     </p>
-                  )}
-
-                  {homepage.bio && (
-                    <div className="bio">
-                      <PortableText value={homepage.bio} />
-                    </div>
                   )}
                 </div>
               </div>
@@ -230,21 +200,6 @@ export default async function Home() {
                 </StaggerContainer>
               </Container>
             </section>
-          )}
-
-          {(homepage.ctaText || homepage.secondaryCtaText) && (
-            <div className="cta-buttons">
-              {homepage.ctaText && homepage.ctaLink && (
-                <Link href={homepage.ctaLink} className="btn btn-primary">
-                  {homepage.ctaText}
-                </Link>
-              )}
-              {homepage.secondaryCtaText && homepage.secondaryCtaLink && (
-                <Link href={homepage.secondaryCtaLink} className="btn btn-secondary">
-                  {homepage.secondaryCtaText}
-                </Link>
-              )}
-            </div>
           )}
         </>
       ) : (

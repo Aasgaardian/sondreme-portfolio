@@ -5,7 +5,8 @@
  * Handles image optimization automatically.
  *
  * Usage:
- *   <SanityImage image={caseStudy.mainImage} alt="Case study" width={800} height={600} />
+ *   <SanityImage image={caseStudy.mainImage} width={800} height={600} />
+ *   Alt text is automatically extracted from the image object's alt field
  */
 
 import type { SanityImageSource } from '@sanity/image-url/lib/types/types'
@@ -13,8 +14,8 @@ import Image from 'next/image'
 import { urlFor } from '@/lib/sanity'
 
 interface SanityImageProps {
-  image: SanityImageSource
-  alt: string
+  image: SanityImageSource & { alt?: string }
+  alt?: string // Optional fallback alt text
   width: number
   height: number
   className?: string
@@ -33,10 +34,13 @@ export default function SanityImage({
 
   const imageUrl = urlFor(image).width(width).height(height).url()
 
+  // Use alt from image object first, then fallback to prop, then empty string
+  const altText = (image as any)?.alt || alt || ''
+
   return (
     <Image
       src={imageUrl}
-      alt={alt}
+      alt={altText}
       width={width}
       height={height}
       className={className}

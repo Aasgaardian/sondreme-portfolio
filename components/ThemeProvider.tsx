@@ -11,19 +11,23 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
+// Get initial theme before React hydration to prevent flicker
+function getInitialTheme(): Theme {
+  if (typeof window === 'undefined') return 'light'
+
+  const savedTheme = localStorage.getItem('theme') as Theme | null
+  if (savedTheme) return savedTheme
+
+  const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  return systemTheme
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('light')
+  const [theme, setTheme] = useState<Theme>(getInitialTheme)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
-    // Sjekk lagret tema eller system preferanse
-    const savedTheme = localStorage.getItem('theme') as Theme | null
-    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-
-    const initialTheme = savedTheme || systemTheme
-    setTheme(initialTheme)
-    document.documentElement.classList.toggle('dark', initialTheme === 'dark')
   }, [])
 
   const toggleTheme = () => {
@@ -31,11 +35,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setTheme(newTheme)
     localStorage.setItem('theme', newTheme)
     document.documentElement.classList.toggle('dark', newTheme === 'dark')
-  }
-
-  // Unngå hydration mismatch
-  if (!mounted) {
-    return <>{children}</>
   }
 
   return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>

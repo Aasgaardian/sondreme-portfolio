@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { draftMode } from 'next/headers'
 import Script from 'next/script'
 import { Toaster } from 'react-hot-toast'
+import { Footer } from '@/components/Footer'
 import { Navigation } from '@/components/Navigation'
 import { SkipToContent } from '@/components/SkipToContent'
 import SmoothScroll from '@/components/SmoothScroll'
@@ -80,6 +81,19 @@ export default async function RootLayout({
   return (
     <html lang="no" suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://use.typekit.net" crossOrigin="anonymous" />
+        <Script id="theme-init" strategy="beforeInteractive">
+          {`
+            (function() {
+              const savedTheme = localStorage.getItem('theme');
+              const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+              const theme = savedTheme || systemTheme;
+              if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+              }
+            })();
+          `}
+        </Script>
         <Script id="adobe-fonts" strategy="beforeInteractive">
           {`
             (function(d) {
@@ -100,6 +114,7 @@ export default async function RootLayout({
               <SkipToContent />
               <Navigation isEnabled={isEnabled} />
               <main id="main-content">{children}</main>
+              <Footer />
               <Toaster
                 position="bottom-right"
                 toastOptions={{
