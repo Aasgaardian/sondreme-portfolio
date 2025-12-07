@@ -1,0 +1,28 @@
+{
+  "name": "studio",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "sanity dev",
+    "start": "sanity start",
+    "build": "sanity build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@sanity/document-internationalization": "^4.1.0",
+    "@sanity/presentation": "^2.0.0",
+    "@sanity/vision": "^4.20.3",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "sanity": "^4.20.3",
+    "sanity-plugin-asset-source-unsplash": "^4.0.1",
+    "styled-components": "^6.1.19"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.7",
+    "typescript": "^5.9.3"
+  }
+}

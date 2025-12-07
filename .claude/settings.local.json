@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:animata.design)",
+      "WebSearch",
+      "Bash(npm run check:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm view:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
