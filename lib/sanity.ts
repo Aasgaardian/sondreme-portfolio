@@ -1,5 +1,4 @@
-import imageUrlBuilder from '@sanity/image-url'
-import type { SanityImageSource } from '@sanity/image-url/lib/types/types'
+import { createImageUrlBuilder, type SanityImageSource } from '@sanity/image-url'
 import { createClient } from 'next-sanity'
 
 /**
@@ -46,7 +45,7 @@ export function getClient(preview = false) {
   return preview ? draftClient : client
 }
 
-const builder = imageUrlBuilder(client)
+const builder = createImageUrlBuilder(client)
 
 export function urlFor(source: SanityImageSource) {
   return builder.image(source)

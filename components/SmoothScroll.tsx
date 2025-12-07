@@ -15,7 +15,7 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
     let lenis: any
 
     const initLenis = async () => {
-      const Lenis = (await import('@studio-freight/lenis')).default
+      const Lenis = (await import('lenis')).default
 
       lenis = new Lenis({
         duration: 0.8,

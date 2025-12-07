@@ -9,7 +9,7 @@
  *   Alt text is automatically extracted from the image object's alt field
  */
 
-import type { SanityImageSource } from '@sanity/image-url/lib/types/types'
+import type { SanityImageSource } from '@sanity/image-url'
 import Image from 'next/image'
 import { urlFor } from '@/lib/sanity'
 

@@ -517,15 +517,11 @@ h3 {
 .cv-section:nth-child(even) {
   background: var(--section-bg-1);
   border-radius: 16px;
-  margin-left: -2rem;
-  margin-right: -2rem;
 }
 
 .cv-section:nth-child(odd) {
   background: var(--section-bg-2);
   border-radius: 16px;
-  margin-left: -2rem;
-  margin-right: -2rem;
 }
 
 .experience-list {
